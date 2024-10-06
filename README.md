@@ -27,17 +27,66 @@ This demonstrates the cconnection of MySQL database and Node.js to create a simp
 
    
    // Question 1 goes here
+   require('dotenv').config();
+const mysql = require('mysql2');
+
+// Create a connection to the database
+const db = mysql.createConnection({
+  host: process.env.DB_HOST,
+  user: process.env.DB_USERNAME,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME
+});
+
+// Test the connection
+db.connect((err) => {
+  if (err) {
+    console.error('Error connecting to the database:', err);
+  } else {
+    console.log('Connected to the MySQL database');
+  }
+});
+
 
 
    // Question 2 goes here
+   app.get('/patients', (req, res) => {
+  const query = 'SELECT patient_id, first_name, last_name, date_of_birth FROM patients';
+  db.query(query, (err, results) => {
+    if (err) {
+      return res.status(500).send('Error retrieving patients');
+    }
+    res.json(results);
+  });
+});
+
 
 
    // Question 3 goes here
+app.get('/providers', (req, res) => {
+  const query = 'SELECT first_name, last_name, provider_specialty FROM providers';
+  db.query(query, (err, results) => {
+    if (err) {
+      return res.status(500).send('Error retrieving providers');
+    }
+    res.json(results);
+  });
+});
 
 
    // Question 4 goes here
 
-   
+   app.get('/patients/:first_name', (req, res) => {
+  const { first_name } = req.params;
+  const query = 'SELECT * FROM patients WHERE first_name = ?';
+  db.query(query, [first_name], (err, results) => {
+    if (err) {
+      return res.status(500).send('Error retrieving patients');
+    }
+    res.json(results);
+  });
+});
+
 
    // listen to the server
    const PORT = 3000
@@ -45,7 +94,23 @@ This demonstrates the cconnection of MySQL database and Node.js to create a simp
      console.log(`server is runnig on http://localhost:${PORT}`)
    })
    ```
-<br><br>
+<br>
+app.get('/providers/specialty/:specialty', (req, res) => {
+  const { specialty } = req.params;
+  const query = 'SELECT * FROM providers WHERE provider_specialty = ?';
+  db.query(query, [specialty], (err, results) => {
+    if (err) {
+      return res.status(500).send('Error retrieving providers');
+    }
+    res.json(results);
+  });
+});
+
+
+
+
+
+<br>
 
 ## Run the server
    ```
@@ -97,3 +162,25 @@ Create a ```GET``` endpoint that retrieves all providers by their specialty
 
 
 ## NOTE: Do not fork this repository
+
+require('dotenv').config();
+const mysql = require('mysql2');
+
+// Create a connection to the database
+const db = mysql.createConnection({
+  host: process.env.DB_HOST,
+  user: process.env.DB_USERNAME,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME
+});
+
+// Test the connection
+db.connect((err) => {
+  if (err) {
+    console.error('Error connecting to the database:', err);
+  } else {
+    console.log('Connected to the MySQL database');
+  }
+});
+
+
